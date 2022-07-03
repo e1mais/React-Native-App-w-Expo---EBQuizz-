@@ -1,9 +1,12 @@
-import { Text, StyleSheet } from 'react-native'
+import { Text, StyleSheet, Platform } from 'react-native'
 import theme from './theme'
 
-const textTheme = StyleSheet.create({
+const font = (Platform.OS === 'web') ? 'arial' : 
+             (Platform.OS === 'ios') ? 'Verdana' : 'sans-serif-condensed'
 
+const textTheme = StyleSheet.create({
   text:{
+    fontFamily: font,
     fontSize: 18,
     color: '#000',
     fontWeight: '400'

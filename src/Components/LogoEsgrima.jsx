@@ -2,13 +2,14 @@ import React from 'react'
 import { StyleSheet, View, Image } from 'react-native'
 import StyleText from '../Theme/Text.jsx'
 
+const uriLogo = require('../assets/img/logo_ebj.png')
 
 const LogoEsgrima = () => { 
   return (
     <View>
       <Image 
         style={styles.logo} 
-        source={{ uri : "https://lh3.googleusercontent.com/-A1WCl921HKQ/AAAAAAAAAAI/AAAAAAAAAAc/n_YVGB7pYiQ/s640-il/photo.jpg"}}>
+        source={uriLogo}>
       </Image>
       <StyleText 
         fontWeight='bold' fontSize='large'
@@ -19,13 +20,11 @@ const LogoEsgrima = () => {
 
 const styles = StyleSheet.create({
   logo: {
-    width: 125,
-    height: 125,
-    padding: 10,
+    width: 150,
+    height: 150,
     margin: 5,
   },
   texto:{
-    fontFamily: 'serif',
     textAlign: 'center'
   }
 })

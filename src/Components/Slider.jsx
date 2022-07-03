@@ -6,61 +6,74 @@ const { width, height } = Dimensions.get('window')
 
 const ITEM_SIZE = width * 0.80;
 const SPACE_ITEM_SIZE = (width - ITEM_SIZE) / 2;
+const ITEM_HEIGHT = height * 0.85
+const SPACE_ITEM_SIZE_HEIGTH = (height - ITEM_HEIGHT) / 2;
 
-export default function Slider ({ objects }) {
+const getItemLayout = (data, index) => (
+  {length: width, offset: (width * 0.8) * index, index}
+)
+
+export default function Slider({ objects, navigation }) {
+  
   const scrollX = React.useRef(new Animated.Value(0)).current
-  return(
+  return (
     <View style={styles.container}>
-      <Animated.FlatList 
-       showsHorizontalScrollIndicator={false}
-       data={objects}
-       horizontal
-       contentContainerStyle = {{alignItems: 'center'}}
-       snapToInterval = {ITEM_SIZE}
-       bounces = {false}
-       onScroll={Animated.event([ {nativeEvent: { contentOffset:{ x: scrollX} }}], {useNativeDriver: true})}
-       scrollEventThrottle = { 16 }
-       renderItem ={({ item, index }) => {
+      <Animated.FlatList
+        showsHorizontalScrollIndicator={false}
+        data={objects}
+        horizontal
+        pagingEnabled
+        snapToAlignment={"start"}
+        contentContainerStyle={{ alignItems: 'center' }}
+        snapToInterval={ITEM_SIZE}
+        bounces={false}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: true })}
+        scrollEventThrottle={16}
 
-        if(!item.image){
-          return <View style={{ width: SPACE_ITEM_SIZE }} />
-        }
-         const inputRange = [
-           (index - 2 ) * ITEM_SIZE,
-            (index - 1)* ITEM_SIZE,
-            (index ) * ITEM_SIZE
-         ];
-         const translateY = scrollX.interpolate({
-           inputRange,
-           outputRange: [0, 50, 0]
-         })
+        initialScrollIndex={1}
+        getItemLayout={getItemLayout}
+        
+        renderItem={({ item, index }) => {
 
-         return (
-           <View key={item.key} style={{ width: ITEM_SIZE }}>
-             <Animated.View
-              style={{
-                marginHorizontal: 10,
-                padding: 10,
-                alingItems: 'center',
-                backgroundColor: 'transparent',
-                borderRadius: 30,
-                transform: [{translateY}]
-              }}>
-              
-              <TouchableOpacity style={{ alignItems: 'center'}}>
-                <Image
-                  source={{ uri: item.image }}
-                  style={ styles.image }>
-                </Image>
-                <StyleText fontSize='large' fontWeight='bold' color='primary'>{item.title}</StyleText>
-              </TouchableOpacity>
+          if (!item.image) {
+            return <View style={{ width: SPACE_ITEM_SIZE }} />
+          }
+          const inputRange = [
+            (index - 2) * ITEM_SIZE,
+            (index - 1) * ITEM_SIZE,
+            (index) * ITEM_SIZE
+          ];
+          const translateY = scrollX.interpolate({
+            inputRange,
+            outputRange: [0, 50, 0]
+          })
+
+          return (
+            <View  key={item.key} style={{ width: ITEM_SIZE, height: ITEM_HEIGHT, paddingVertical: SPACE_ITEM_SIZE_HEIGTH + 10 }}>
+              <Animated.View
+                style={{
+                  marginHorizontal: 10,
+                  padding: 10,
+                  alingItems: 'center',
+                  backgroundColor: 'transparent',
+                  borderRadius: 30,
+                  transform: [{ translateY }]
+                }}>
+
+                <TouchableOpacity onPress={() => { navigation.navigate(item.component) }} style={{ alignItems: 'center' }}>
+                  <Image
+                    source={ item.image }
+                    style={styles.image}>
+                  </Image>
+                  <StyleText fontSize='large' fontWeight='bold' color='primary'>{item.title}</StyleText>
+                </TouchableOpacity>
                 <View style={styles.content}>
                   <StyleText fontSize='small' fontWeight='normal' color='secondary'>{item.description}</StyleText>
                 </View>
-             </Animated.View>
-           </View>
-         )
-       }}
+              </Animated.View>
+            </View>
+          )
+        }}
       />
     </View>
 
@@ -68,18 +81,17 @@ export default function Slider ({ objects }) {
 }
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     flex: 1,
-    maxHeight: 450
   },
 
-  image:{
-    width:'100%',
+  image: {
+    width: '100%',
     height: ITEM_SIZE * .88,
-    resizeMode:'cover'
+    resizeMode: 'cover'
   }
   ,
-  content:{
+  content: {
     alignItems: 'center',
     paddingTop: 10
   }
